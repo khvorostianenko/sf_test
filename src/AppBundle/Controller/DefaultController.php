@@ -69,12 +69,12 @@ class DefaultController extends FOSRestController
 
     /**
      * Update a specific user
-     * /users/{$id}/name
+     * /users/{$id}/username
      * @param Request $request
      * @param $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function putUsersNameAction(Request $request, $id)
+    public function putUsersUsernameAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AppBundle:User')->find($id);

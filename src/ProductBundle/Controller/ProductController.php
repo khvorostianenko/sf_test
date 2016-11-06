@@ -15,6 +15,36 @@ use Symfony\Component\HttpFoundation\Request;
 class ProductController extends FOSRestController
 {
     /**
+     * Add new product
+     * /products/new
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function newAction(Request $request)
+    {
+        $name = $request->headers->get('name');
+        $price = $request->headers->get('price');
+
+        $product = new Product();
+        $product->setName($name);
+        $product->setPrice($price);
+
+        $em = $this->getDoctrine()->getManager();
+
+        // tells Doctrine you want to (eventually) save the Product (no queries yet)
+        $em->persist($product);
+
+        // actually executes the queries (i.e. the INSERT query)
+        $em->flush();
+
+        //return new Response('Saved new product with id '.$product->getId());
+        $result = 'Saved new product with id '.$product->getId();
+
+        $view = $this->view($result, 200);
+        return $this->handleView($view);
+    }
+
+    /**
      * Display a list of all products
      * /products
      * @return \Symfony\Component\HttpFoundation\Response
@@ -46,11 +76,16 @@ class ProductController extends FOSRestController
      */
     public function deleteAction(Product $product){
 
+        $id = $product->getId();
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($product);
         $em->flush();
 
-        return $this->redirectToRoute('homepage');
+        $result = 'Delete product with id= '.$id;
+
+        $view = $this->view($result, 200);
+        return $this->handleView($view);
     }
 
     /**
@@ -81,32 +116,6 @@ class ProductController extends FOSRestController
         return $this->handleView($view);
     }
 
-    /**
-     * Add new product
-     * /products/new
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function newAction(Request $request)
-    {
-        $name = $request->headers->get('name');
-        $price = $request->headers->get('price');
 
-        $product = new Product();
-        $product->setName($name);
-        $product->setPrice($price);
 
-        $em = $this->getDoctrine()->getManager();
-
-        // tells Doctrine you want to (eventually) save the Product (no queries yet)
-        $em->persist($product);
-
-        // actually executes the queries (i.e. the INSERT query)
-        $em->flush();
-
-        //return new Response('Saved new product with id '.$product->getId());
-        $result = 'Saved new product with id '.$product->getId();
-
-        $view = $this->view($result, 200);
-        return $this->handleView($view);
-    }
 }
