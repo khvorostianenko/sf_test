@@ -2,12 +2,8 @@
 
 namespace ProductBundle\Controller;
 
-//use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations\Version;
-
 use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\FOSRestController;
 use ProductBundle\Entity\Product;
@@ -17,17 +13,48 @@ use Symfony\Component\HttpFoundation\Request;
      * @RouteResource("Product")
      */
 class ProductController extends FOSRestController
-//    extends Controller
 {
-//    /**
-//     * @Route("/")
-//     */
-//    public function indexAction()
-//    {
-//        return $this->render('ProductBundle:Default:index.html.twig');
-//    }
+    /**
+     * Display a list of all products
+     * /products
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function cgetAction(){
+        $repository = $this->getDoctrine()->getRepository('ProductBundle:Product');
+        $query = $repository->createQueryBuilder('p')->select('p')->getQuery();
+        $result = $query->getResult(Query::HYDRATE_ARRAY);
+        $view = $this->view($result, 200);
+        return $this->handleView($view);
+    }
 
     /**
+     * Display a specific product
+     * /products/{$product}
+     * @param $product
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getAction(Product $product){
+        $view = $this->view($product, 200);
+        return $this->handleView($view);
+    }
+
+    /**
+     * Delete a specific product
+     *  /products/{$product}
+     * @param $product
+     * @return \FOS\RestBundle\View\View
+     */
+    public function deleteAction(Product $product){
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($product);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * Update a specific product
      * /products/{$id}/price
      * @param Request $request
      * @param $id
@@ -55,6 +82,7 @@ class ProductController extends FOSRestController
     }
 
     /**
+     * Add new product
      * /products/new
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -80,42 +108,5 @@ class ProductController extends FOSRestController
 
         $view = $this->view($result, 200);
         return $this->handleView($view);
-    }
-
-    /**
-     * /products
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function cgetAction(){
-        $repository = $this->getDoctrine()->getRepository('ProductBundle:Product');
-        $query = $repository->createQueryBuilder('p')->select('p')->getQuery();
-        $result = $query->getResult(Query::HYDRATE_ARRAY);
-        $view = $this->view($result, 200);
-        return $this->handleView($view);
-    }
-
-
-    /**
-     * /products/{$product}
-     * @param $product
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getAction(Product $product){
-        $view = $this->view($product, 200);
-        return $this->handleView($view);
-    }
-
-    /**
-     *  /products/{$product}
-     * @param $product
-     * @return \FOS\RestBundle\View\View
-     */
-    public function deleteAction(Product $product){
-
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($product);
-        $em->flush();
-
-        return $this->redirectToRoute('homepage');
     }
 }

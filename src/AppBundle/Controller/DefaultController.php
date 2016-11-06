@@ -4,7 +4,6 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations\Version;
 
@@ -12,7 +11,6 @@ use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\FOSRestController;
 use AppBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
-
 
 class DefaultController extends FOSRestController
 {
@@ -28,17 +26,8 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * /users/{$user}
-     * @param $user
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getUserAction(User $user){
-        $view = $this->view($user, 200);
-        return $this->handleView($view);
-    }
-    
-    /**
-     * /users/
+     * Display a list of all users
+     * /users
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function cgetUsersAction(){
@@ -50,6 +39,18 @@ class DefaultController extends FOSRestController
     }
 
     /**
+     * Display a specific user
+     * /users/{$user}
+     * @param $user
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getUserAction(User $user){
+        $view = $this->view($user, 200);
+        return $this->handleView($view);
+    }
+    
+    /**
+     * Delete a specific user
      *  /users/{$user}
      * @param $user
      * @return \FOS\RestBundle\View\View
@@ -67,6 +68,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
+     * Update a specific user
      * /users/{$id}/name
      * @param Request $request
      * @param $id
