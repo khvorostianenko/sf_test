@@ -85,7 +85,7 @@ class DefaultController extends FOSRestController
             );
         }
 
-        $username = $request->headers->get('username');
+        $username = $request->query->get('username');
         if(!$username){
             throw $this->createNotFoundException(
                 'You don\'t entered username for id =   '.$id

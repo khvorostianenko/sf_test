@@ -22,8 +22,8 @@ class ProductController extends FOSRestController
      */
     public function newAction(Request $request)
     {
-        $name = $request->headers->get('name');
-        $price = $request->headers->get('price');
+        $name = $request->query->get('name');
+        $price = $request->query->get('price');
 
         $product = new Product();
         $product->setName($name);
@@ -106,7 +106,7 @@ class ProductController extends FOSRestController
             );
         }
 
-        $price = $request->headers->get('price');
+        $price = $request->query->get('price');
         $product->setPrice($price);
         $em->flush();
 
